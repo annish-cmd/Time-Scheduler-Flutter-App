@@ -1,0 +1,377 @@
+/*
+ * HELP & SUPPORT SCREEN
+ * -------------------
+ * Provides support resources and contact information.
+ * 
+ * Key features:
+ * - Social media links for support
+ * - Contact information
+ * - FAQ section for common questions
+ * - External link handling with url_launcher
+ * 
+ * UI elements:
+ * - Gradient header with support icon
+ * - Social media cards with icons
+ * - Email and contact links
+ * - Visual styling consistent with app brand
+ */
+
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
+
+class HelpSupportScreen extends StatelessWidget {
+  const HelpSupportScreen({Key? key}) : super(key: key);
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await url_launcher.launchUrl(uri,
+        mode: url_launcher.LaunchMode.externalApplication)) {
+      debugPrint('Could not launch $url');
+    }
+  }
+
+  Future<void> _launchEmail(String email, String subject) async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: email,
+      queryParameters: {'subject': subject},
+    );
+
+    if (!await url_launcher.launchUrl(emailLaunchUri)) {
+      debugPrint('Could not launch email client');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          'Help & Support',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: theme.appBarTheme.titleTextStyle?.color,
+            letterSpacing: 0.5,
+          ),
+        ),
+        leading: IconButton(
+          icon:
+              Icon(Icons.arrow_back_ios_rounded, color: theme.iconTheme.color),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF4568DC), // Blue
+                      Color(0xFF7851DF), // Purple
+                      Color(0xFFB06AB3), // Pink
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF5E61F4).withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Icon(
+                        Icons.support_agent_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Need Help?',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'We\'re here to help you manage your time effectively',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 16,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'Contact & Social Links',
+                style: TextStyle(
+                  color: isDark ? Colors.grey[400] : Colors.black87,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildSocialLink(
+                title: 'GitHub',
+                subtitle: '@annish-cmd',
+                icon: Icons.code_rounded,
+                onTap: () => _launchUrl('https://github.com/annish-cmd/'),
+                gradientColors: [
+                  const Color(0xFF6e5494), // GitHub purple
+                  const Color(0xFF24292e), // GitHub dark
+                ],
+                isDark: isDark,
+              ),
+              _buildSocialLink(
+                title: 'LinkedIn',
+                subtitle: '@anishchauhan',
+                icon: Icons.work_rounded,
+                onTap: () =>
+                    _launchUrl('https://www.linkedin.com/in/anishchauhan/'),
+                gradientColors: [
+                  const Color(0xFF0077B5),
+                  const Color(0xFF00A0DC),
+                ],
+                isDark: isDark,
+              ),
+              _buildSocialLink(
+                title: 'Website',
+                subtitle: 'www.anishchauhan.com.np',
+                icon: Icons.language_outlined,
+                onTap: () => _launchUrl('https://www.anishchauhan.com.np/'),
+                gradientColors: [
+                  const Color(0xFFB06AB3),
+                  const Color(0xFF4568DC),
+                ],
+                isDark: isDark,
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'Frequently Asked Questions',
+                style: TextStyle(
+                  color: isDark ? Colors.grey[400] : Colors.black87,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildFaqItem(
+                question: 'How do I create a new task?',
+                answer:
+                    'Tap the floating "+" button at the bottom right of the home screen to create a new task. Fill in the task details and tap Save.',
+                isDark: isDark,
+              ),
+              _buildFaqItem(
+                question: 'Can I set reminders for my tasks?',
+                answer:
+                    'Yes, when creating or editing a task, you can set a specific date and time for reminders to help you stay on track.',
+                isDark: isDark,
+              ),
+              _buildFaqItem(
+                question: 'How do I enable dark mode?',
+                answer:
+                    'Open the app drawer from the home screen, then toggle the "Dark Mode" switch at the bottom of the menu.',
+                isDark: isDark,
+              ),
+              _buildFaqItem(
+                question: 'How can I prioritize my tasks?',
+                answer:
+                    'When creating or editing a task, you can set priority levels (High, Medium, Low) to help organize your tasks based on importance.',
+                isDark: isDark,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialLink({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Function() onTap,
+    required List<Color> gradientColors,
+    required bool isDark,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: gradientColors,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: gradientColors[0].withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    icon,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: isDark ? Colors.grey[400] : Colors.black54,
+                          fontSize: 14,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: isDark ? Colors.grey[600] : Colors.black54,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFaqItem({
+    required String question,
+    required String answer,
+    required bool isDark,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Theme(
+        data: ThemeData(
+          dividerColor: Colors.transparent,
+          colorScheme: ColorScheme.light(
+            primary: const Color(0xFF5E61F4),
+          ),
+        ),
+        child: ExpansionTile(
+          title: Text(
+            question,
+            style: TextStyle(
+              color: isDark ? Colors.white : Colors.black87,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+          iconColor: const Color(0xFF5E61F4),
+          collapsedIconColor: isDark ? Colors.grey[400] : Colors.grey[700],
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Text(
+                answer,
+                style: TextStyle(
+                  color: isDark ? Colors.grey[400] : Colors.black87,
+                  fontSize: 14,
+                  height: 1.5,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
