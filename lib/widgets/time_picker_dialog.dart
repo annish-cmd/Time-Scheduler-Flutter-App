@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/color_utils.dart';
 
 class CustomTimePickerDialog extends StatefulWidget {
   final TimeOfDay initialTime;
@@ -41,7 +42,9 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
       }
 
       _selectedTime = TimeOfDay(
-          hour: hour == 12 && _isAM ? 0 : hour, minute: _selectedTime.minute);
+        hour: hour == 12 && _isAM ? 0 : hour,
+        minute: _selectedTime.minute,
+      );
     });
   }
 
@@ -136,8 +139,8 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
     final Color toggleBgColor =
         isDarkMode ? Colors.grey.shade700 : Colors.grey.shade200;
     final Color timeBoxBgColor = isDarkMode
-        ? Theme.of(context).primaryColor.withOpacity(0.2)
-        : Theme.of(context).primaryColor.withOpacity(0.1);
+        ? Theme.of(context).primaryColor.withAlpha(26)
+        : Theme.of(context).primaryColor.withAlpha(10);
     final Color timeBoxBorderColor = isDarkMode
         ? Theme.of(context).primaryColor.withOpacity(0.4)
         : Theme.of(context).primaryColor.withOpacity(0.3);
@@ -147,9 +150,7 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
     final primaryColor = Theme.of(context).primaryColor;
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor: cardBgColor,
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -183,7 +184,9 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                         onTap: _isAM ? null : _toggleAmPm,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: _isAM ? primaryColor : Colors.transparent,
                             borderRadius: BorderRadius.circular(18),
@@ -206,7 +209,9 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                         onTap: _isAM ? _toggleAmPm : null,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: !_isAM ? primaryColor : Colors.transparent,
                             borderRadius: BorderRadius.circular(18),
@@ -239,8 +244,11 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                 Column(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.keyboard_arrow_up,
-                          color: primaryColor, size: 32),
+                      icon: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: primaryColor,
+                        size: 32,
+                      ),
                       onPressed: () => _adjustHour(1),
                     ),
                     Container(
@@ -262,8 +270,11 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.keyboard_arrow_down,
-                          color: primaryColor, size: 32),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: primaryColor,
+                        size: 32,
+                      ),
                       onPressed: () => _adjustHour(-1),
                     ),
                     Text(
@@ -295,8 +306,11 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                 Column(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.keyboard_arrow_up,
-                          color: primaryColor, size: 32),
+                      icon: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: primaryColor,
+                        size: 32,
+                      ),
                       onPressed: () => _adjustMinute(1),
                     ),
                     Container(
@@ -318,8 +332,11 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.keyboard_arrow_down,
-                          color: primaryColor, size: 32),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: primaryColor,
+                        size: 32,
+                      ),
                       onPressed: () => _adjustMinute(-1),
                     ),
                     Text(
@@ -365,7 +382,9 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                   child: const Text(
                     'Select',

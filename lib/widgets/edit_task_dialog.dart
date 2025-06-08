@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import '../models/task_model.dart';
+import '../utils/color_utils.dart';
 import 'time_picker_dialog.dart';
 
 class EditTaskDialog extends StatefulWidget {
   final Task task;
   final Function(Task) onUpdateTask;
-  final Function(String)? onDeleteTask;
+  final Function(String) onDeleteTask;
 
   const EditTaskDialog({
     Key? key,
     required this.task,
     required this.onUpdateTask,
-    this.onDeleteTask,
+    required this.onDeleteTask,
   }) : super(key: key);
 
   @override
@@ -19,45 +20,32 @@ class EditTaskDialog extends StatefulWidget {
 }
 
 class _EditTaskDialogState extends State<EditTaskDialog> {
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-
-  late TimeOfDay _startTime;
-  late TimeOfDay _endTime;
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late DateTime _startTime;
+  late DateTime _endTime;
   late Color _selectedColor;
+  late TaskPriority _selectedPriority;
 
-  // List of solid colors
-  final List<Color> _availableColors = [
+  final List<Color> _colors = [
     Colors.blue,
     Colors.green,
     Colors.orange,
     Colors.purple,
     Colors.red,
     Colors.teal,
-    Colors.indigo,
-    Colors.pink,
-    Colors.amber,
-    Colors.cyan,
-    Colors.deepPurple,
-    Colors.lightBlue,
-    Colors.lime,
-    Colors.deepOrange,
   ];
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize controllers with existing task data
-    _titleController.text = widget.task.title;
-    _descriptionController.text = widget.task.description;
-
-    // Initialize times from existing task
-    _startTime = TimeOfDay.fromDateTime(widget.task.startTime);
-    _endTime = TimeOfDay.fromDateTime(widget.task.endTime);
-
-    // Initialize color
+    _titleController = TextEditingController(text: widget.task.title);
+    _descriptionController =
+        TextEditingController(text: widget.task.description);
+    _startTime = widget.task.startTime;
+    _endTime = widget.task.endTime;
     _selectedColor = widget.task.color;
+    _selectedPriority = widget.task.priority;
   }
 
   @override
@@ -71,20 +59,20 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
     showDialog(
       context: context,
       builder: (context) => CustomTimePickerDialog(
-        initialTime: _startTime,
+        initialTime: TimeOfDay.fromDateTime(_startTime),
         onTimeSelected: (time) {
           setState(() {
-            _startTime = time;
+            _startTime = DateTime(
+              _startTime.year,
+              _startTime.month,
+              _startTime.day,
+              time.hour,
+              time.minute,
+            );
 
             // If end time is before start time, adjust it
-            if (_endTime.hour < _startTime.hour ||
-                (_endTime.hour == _startTime.hour &&
-                    _endTime.minute < _startTime.minute)) {
-              int endHour = _startTime.hour + 1;
-              if (endHour >= 24) {
-                endHour = 23;
-              }
-              _endTime = TimeOfDay(hour: endHour, minute: _startTime.minute);
+            if (_endTime.isBefore(_startTime)) {
+              _endTime = _startTime.add(const Duration(hours: 1));
             }
           });
         },
@@ -96,10 +84,28 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
     showDialog(
       context: context,
       builder: (context) => CustomTimePickerDialog(
-        initialTime: _endTime,
+        initialTime: TimeOfDay.fromDateTime(_endTime),
         onTimeSelected: (time) {
+          final selectedTime = DateTime(
+            _endTime.year,
+            _endTime.month,
+            _endTime.day,
+            time.hour,
+            time.minute,
+          );
+
+          if (selectedTime.isBefore(_startTime)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('End time must be after start time'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            return;
+          }
+
           setState(() {
-            _endTime = time;
+            _endTime = selectedTime;
           });
         },
       ),
@@ -121,43 +127,53 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
       return;
     }
 
-    // Create updated datetime objects for start and end time (preserve the original date)
-    final originalDate = widget.task.startTime;
-    final startDateTime = DateTime(
-      originalDate.year,
-      originalDate.month,
-      originalDate.day,
-      _startTime.hour,
-      _startTime.minute,
-    );
-    final endDateTime = DateTime(
-      originalDate.year,
-      originalDate.month,
-      originalDate.day,
-      _endTime.hour,
-      _endTime.minute,
-    );
-
-    // Create the updated task
     final updatedTask = Task(
-      id: widget.task.id, // Keep the same ID
+      id: widget.task.id,
       title: _titleController.text,
       description: _descriptionController.text,
-      startTime: startDateTime,
-      endTime: endDateTime,
+      startTime: _startTime,
+      endTime: _endTime,
       color: _selectedColor,
+      priority: _selectedPriority,
     );
 
     widget.onUpdateTask(updatedTask);
     Navigator.pop(context);
   }
 
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Task'),
+        content: const Text('Are you sure you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              widget.onDeleteTask(widget.task.id);
+              Navigator.of(context).pop(); // Close alert dialog
+              Navigator.of(context).pop(); // Close edit dialog
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final Color bgColor = isDarkMode
-        ? Theme.of(context).primaryColor.withOpacity(0.15)
-        : Theme.of(context).primaryColor.withOpacity(0.08);
+        ? Theme.of(context).primaryColor.withAlpha(26)
+        : Theme.of(context).primaryColor.withAlpha(10);
     final Color cardBgColor =
         isDarkMode ? Colors.grey.shade800 : Colors.grey.shade50;
     final Color textFieldBgColor =
@@ -166,10 +182,10 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
     final Color hintColor =
         isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600;
     final Color borderColor = isDarkMode
-        ? Theme.of(context).primaryColor.withOpacity(0.4)
-        : Theme.of(context).primaryColor.withOpacity(0.2);
+        ? Theme.of(context).primaryColor.withAlpha(100)
+        : Theme.of(context).primaryColor.withAlpha(40);
     final Color sectionBgColor =
-        isDarkMode ? Colors.grey.shade900.withOpacity(0.6) : bgColor;
+        isDarkMode ? Colors.grey.shade900.withAlpha(150) : bgColor;
     final Color sectionTitleColor = isDarkMode
         ? Color(0xFF94BBFF) // Light blue color for dark mode
         : Theme.of(context).primaryColor;
@@ -213,14 +229,15 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                           end: Alignment.bottomRight,
                           colors: [
                             Theme.of(context).primaryColor,
-                            Theme.of(context).primaryColor.withOpacity(0.7),
+                            ColorUtils.withAlpha(
+                                Theme.of(context).primaryColor, 0.7),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.3),
+                            color: ColorUtils.withAlpha(
+                                Theme.of(context).primaryColor, 0.3),
                             offset: const Offset(0, 2),
                             blurRadius: 6,
                           ),
@@ -233,13 +250,11 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Text(
+                    const Text(
                       'Edit Task',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                        color: textColor,
                       ),
                     ),
                   ],
@@ -492,7 +507,9 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                                       const SizedBox(width: 4),
                                       Flexible(
                                         child: Text(
-                                          _formatTimeOfDay(_startTime),
+                                          _formatTimeOfDay(
+                                              TimeOfDay.fromDateTime(
+                                                  _startTime)),
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
@@ -563,7 +580,8 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                                       const SizedBox(width: 4),
                                       Flexible(
                                         child: Text(
-                                          _formatTimeOfDay(_endTime),
+                                          _formatTimeOfDay(
+                                              TimeOfDay.fromDateTime(_endTime)),
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
@@ -627,9 +645,9 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                       height: 60,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _availableColors.length,
+                        itemCount: _colors.length,
                         itemBuilder: (context, index) {
-                          final color = _availableColors[index];
+                          final color = _colors[index];
                           final isSelected = _selectedColor == color;
 
                           return Padding(
@@ -686,49 +704,13 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                 children: [
                   // Delete button
                   TextButton.icon(
-                    onPressed: () {
-                      // Ask for confirmation
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          backgroundColor: cardBgColor,
-                          title: Text('Delete Task',
-                              style: TextStyle(color: textColor)),
-                          content: Text(
-                            'Are you sure you want to delete this task?',
-                            style: TextStyle(color: textColor),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(
-                                    context); // Close confirmation dialog
-                                Navigator.pop(context); // Close edit dialog
-
-                                // Call the delete function if provided
-                                if (widget.onDeleteTask != null) {
-                                  widget.onDeleteTask!(widget.task.id);
-                                }
-
-                                // Show feedback to user
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Task deleted')),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                  foregroundColor: Colors.red),
-                              child: const Text('Delete'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                    onPressed: _showDeleteConfirmation,
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                     ),
                     icon: const Icon(Icons.delete_outline, size: 18),
                     label: const Text('Delete'),
@@ -742,8 +724,8 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                     },
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                        horizontal: 12,
+                        vertical: 8,
                       ),
                     ),
                     child: Text(
@@ -752,19 +734,19 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                         color: isDarkMode
                             ? Colors.grey.shade300
                             : Colors.grey.shade700,
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 8),
 
                   // Update Task button
                   ElevatedButton(
                     onPressed: _updateTask,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
+                        horizontal: 16,
+                        vertical: 8,
                       ),
                       backgroundColor: Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
@@ -777,12 +759,12 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.save_outlined,
-                            size: 18, color: Colors.white),
-                        SizedBox(width: 8),
+                            size: 16, color: Colors.white),
+                        SizedBox(width: 4),
                         Text(
                           'Update',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),

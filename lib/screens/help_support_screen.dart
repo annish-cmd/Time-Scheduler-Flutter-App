@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import '../utils/color_utils.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({Key? key}) : super(key: key);
@@ -27,18 +28,6 @@ class HelpSupportScreen extends StatelessWidget {
     if (!await url_launcher.launchUrl(uri,
         mode: url_launcher.LaunchMode.externalApplication)) {
       debugPrint('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchEmail(String email, String subject) async {
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-      queryParameters: {'subject': subject},
-    );
-
-    if (!await url_launcher.launchUrl(emailLaunchUri)) {
-      debugPrint('Could not launch email client');
     }
   }
 
@@ -52,13 +41,12 @@ class HelpSupportScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Help & Support',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: theme.appBarTheme.titleTextStyle?.color,
-            letterSpacing: 0.5,
+            color: Colors.white,
           ),
         ),
         leading: IconButton(
@@ -89,7 +77,7 @@ class HelpSupportScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF5E61F4).withOpacity(0.3),
+                      color: ColorUtils.withAlpha10(Colors.black),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -196,27 +184,27 @@ class HelpSupportScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildFaqItem(
-                question: 'How do I create a new task?',
+                question: 'How do I add a new task?',
                 answer:
-                    'Tap the floating "+" button at the bottom right of the home screen to create a new task. Fill in the task details and tap Save.',
+                    'To add a new task, tap the "+" button at the bottom of the screen. Fill in the details like title, description, time, and color, then tap "Add Task".',
                 isDark: isDark,
               ),
               _buildFaqItem(
-                question: 'Can I set reminders for my tasks?',
+                question: 'How do I edit or delete a task?',
                 answer:
-                    'Yes, when creating or editing a task, you can set a specific date and time for reminders to help you stay on track.',
+                    'To edit a task, tap on the edit icon (pencil) on any task card. To delete, swipe the task from right to left, or use the delete button in the edit screen.',
                 isDark: isDark,
               ),
               _buildFaqItem(
-                question: 'How do I enable dark mode?',
+                question: 'What is AM and PM in time selection?',
                 answer:
-                    'Open the app drawer from the home screen, then toggle the "Dark Mode" switch at the bottom of the menu.',
+                    'AM is for morning times (from 12:00 midnight to 11:59 before lunch). PM is for afternoon and night times (from 12:00 noon to 11:59 at night). Simple rule: AM = morning, PM = afternoon/night.',
                 isDark: isDark,
               ),
               _buildFaqItem(
-                question: 'How can I prioritize my tasks?',
+                question: 'Can I sort my tasks in a different order?',
                 answer:
-                    'When creating or editing a task, you can set priority levels (High, Medium, Low) to help organize your tasks based on importance.',
+                    'Tasks are automatically sorted by priority and time. High priority tasks appear before normal and low priority tasks, and within each priority level they are sorted by time.',
                 isDark: isDark,
               ),
             ],
@@ -241,7 +229,7 @@ class HelpSupportScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: ColorUtils.withAlpha10(Colors.black),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -331,7 +319,7 @@ class HelpSupportScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: ColorUtils.withAlpha10(Colors.black),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../utils/color_utils.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({Key? key}) : super(key: key);
@@ -36,7 +37,7 @@ class AboutScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: ColorUtils.withAlpha10(Colors.black),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -66,7 +67,7 @@ class AboutScreen extends StatelessWidget {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: ColorUtils.withAlpha10(Colors.black),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -208,7 +209,7 @@ class AboutScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF5E61F4).withOpacity(0.3),
+                      color: ColorUtils.withAlpha40(Colors.black),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),

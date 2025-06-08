@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share_plus/share_plus.dart';
 import '../screens/about_screen.dart';
 import '../screens/help_support_screen.dart';
+import '../utils/color_utils.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -146,9 +147,7 @@ class AppDrawer extends StatelessWidget {
                         child: Text(
                           'Version 1.0.0',
                           style: TextStyle(
-                            color: userModel.isDarkMode
-                                ? Colors.white60
-                                : Colors.grey.shade600,
+                            color: Colors.white.withAlpha(38),
                             fontSize: 12,
                           ),
                         ),
@@ -516,20 +515,6 @@ class AppDrawer extends StatelessWidget {
     if (!await url_launcher.launchUrl(url,
         mode: url_launcher.LaunchMode.externalApplication)) {
       debugPrint('Could not launch $urlString');
-    }
-  }
-
-  // Launch email
-  Future<void> _launchEmail() async {
-    final Uri emailLaunchUri = Uri(
-        scheme: 'mailto',
-        path: 'support@taskscheduler.com',
-        queryParameters: {'subject': 'Task Scheduler App Feedback'});
-
-    try {
-      await url_launcher.launchUrl(emailLaunchUri);
-    } catch (e) {
-      debugPrint('Could not launch email client: $e');
     }
   }
 

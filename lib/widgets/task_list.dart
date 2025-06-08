@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/task_model.dart';
 import 'package:intl/intl.dart';
-import 'edit_task_dialog.dart';
-import 'package:provider/provider.dart';
 
 class TaskList extends StatelessWidget {
   final List<Task> tasks;
@@ -10,48 +8,29 @@ class TaskList extends StatelessWidget {
   final Function(String) onEditTask;
 
   const TaskList({
-    Key? key,
+    super.key,
     required this.tasks,
     required this.onDeleteTask,
     required this.onEditTask,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final Color titleColor =
-        isDarkMode ? Colors.white : const Color(0xFF424242);
-    final Color descriptionColor =
-        isDarkMode ? Colors.grey[300]! : Colors.grey[600]!;
-
     if (tasks.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: isDarkMode
-                      ? [Colors.grey[700]!, Colors.grey[800]!]
-                      : [const Color(0xFFF0F0F0), const Color(0xFFE6E6E6)],
-                ),
+                color: Theme.of(context).primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
               child: Icon(
-                Icons.check_circle_outline,
-                size: 60,
-                color: isDarkMode ? Colors.grey[400] : const Color(0xFF9E9E9E),
+                Icons.task_alt,
+                size: 64,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(height: 24),
@@ -59,16 +38,20 @@ class TaskList extends StatelessWidget {
               'No tasks yet',
               style: TextStyle(
                 fontSize: 22,
-                fontWeight: FontWeight.w500,
-                color: isDarkMode ? Colors.white : const Color(0xFF616161),
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Text(
-              'Add a task to get started',
+              'Add your first task by tapping the + button',
               style: TextStyle(
                 fontSize: 16,
-                color: isDarkMode ? Colors.grey[400] : const Color(0xFF9E9E9E),
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.color
+                    ?.withOpacity(0.7),
               ),
             ),
           ],
@@ -76,188 +59,132 @@ class TaskList extends StatelessWidget {
       );
     }
 
-    // List of pastel colors for the tasks
-    final List<Color> taskColors = [
-      const Color(0xFF90CAF9), // Light Blue
-      const Color(0xFFA5D6A7), // Light Green
-      const Color(0xFFFFCC80), // Light Orange
-      const Color(0xFFCE93D8), // Light Purple
-      const Color(0xFFEF9A9A), // Light Red
-    ];
-
     return ListView.builder(
+      padding: const EdgeInsets.all(16),
       itemCount: tasks.length,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       itemBuilder: (context, index) {
         final task = tasks[index];
+        final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-        // Use color from task, or fall back to color based on index if task color is default
-        final Color cardColor = task.color == Colors.blue
-            ? taskColors[index % taskColors.length]
-            : task.color;
-
-        // Format time in 12-hour format with AM/PM
-        final timeFormat = DateFormat('hh:mm a');
-        final startTime = timeFormat.format(task.startTime);
-        final endTime = timeFormat.format(task.endTime);
+        // Get custom background color for the task card
+        final Color cardColor = task.color;
 
         return Dismissible(
           key: Key(task.id),
           background: Container(
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: Colors.red.shade400,
               borderRadius: BorderRadius.circular(16),
             ),
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: const Icon(
-              Icons.delete,
+              Icons.delete_outline,
               color: Colors.white,
-              size: 30,
+              size: 28,
             ),
           ),
           direction: DismissDirection.endToStart,
-          onDismissed: (direction) {
-            // Delete the task
-            onDeleteTask(task.id);
-
-            // Show a snackbar to confirm deletion
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Task deleted'),
-                action: SnackBarAction(
-                  label: 'UNDO',
-                  onPressed: () {
-                    // Restore the task using TaskModel (requires access via Provider)
-                    Provider.of<TaskModel>(context, listen: false)
-                        .addTask(task);
-                  },
-                ),
-                duration: const Duration(seconds: 3),
-              ),
-            );
-          },
-          confirmDismiss: (direction) async {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                final bool dialogIsDarkMode =
-                    Theme.of(context).brightness == Brightness.dark;
-                final Color dialogBgColor =
-                    dialogIsDarkMode ? Colors.grey.shade800 : Colors.white;
-                final Color dialogTextColor =
-                    dialogIsDarkMode ? Colors.white : Colors.black87;
-
-                return AlertDialog(
-                  backgroundColor: dialogBgColor,
-                  title: Text(
-                    'Delete Task',
-                    style: TextStyle(color: dialogTextColor),
-                  ),
-                  content: Text(
-                    'Are you sure you want to delete this task?',
-                    style: TextStyle(color: dialogTextColor),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('CANCEL'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text(
-                        'DELETE',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
+          onDismissed: (_) => onDeleteTask(task.id),
           child: Container(
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: isDarkMode
-                  ? cardColor.withOpacity(0.4)
-                  : cardColor.withOpacity(0.2),
+              color: cardColor,
               borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: cardColor.withOpacity(0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                // Title
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        task.title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: titleColor,
-                        ),
+                // Content
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Title
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              task.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () => onEditTask(task.id),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
+
+                      // Time pill
+                      Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? Colors.grey.shade700
-                              : Colors.black.withOpacity(0.05),
-                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Icon(
-                          Icons.edit,
-                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                          size: 16,
+                        child: Text(
+                          '${DateFormat('hh:mm a').format(task.startTime)} - ${DateFormat('hh:mm a').format(task.endTime)}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+
+                      // Description
+                      if (task.description.isNotEmpty)
+                        Text(
+                          task.description,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            height: 1.2,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                        ),
+                    ],
+                  ),
                 ),
 
-                const SizedBox(height: 12),
-
-                // Time indicator
-                Align(
-                  alignment: Alignment.topLeft,
+                // Edit button
+                Positioned(
+                  top: 8,
+                  right: 8,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color:
-                          isDarkMode ? cardColor.withOpacity(0.8) : cardColor,
-                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
                     ),
-                    child: Text(
-                      '$startTime - $endTime',
-                      style: const TextStyle(
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.edit,
                         color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
+                        size: 18,
                       ),
+                      constraints: const BoxConstraints(
+                        minWidth: 36,
+                        minHeight: 36,
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: () => onEditTask(task.id),
                     ),
                   ),
                 ),
-
-                // Description
-                if (task.description.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    task.description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: descriptionColor,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
               ],
             ),
           ),

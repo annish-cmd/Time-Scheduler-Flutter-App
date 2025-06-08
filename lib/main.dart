@@ -6,6 +6,7 @@ import 'widgets/app_drawer.dart';
 import 'widgets/task_list.dart';
 import 'widgets/add_task_dialog.dart';
 import 'widgets/edit_task_dialog.dart';
+import 'utils/color_utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -127,7 +128,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     final taskModel = Provider.of<TaskModel>(context);
-    final tasks = taskModel.tasks;
 
     return Scaffold(
       key: scaffoldKey,
@@ -163,11 +163,11 @@ class HomeScreen extends StatelessWidget {
                 // Menu icon
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: ColorUtils.withAlpha15(Colors.white),
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: ColorUtils.withAlpha10(Colors.black),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
