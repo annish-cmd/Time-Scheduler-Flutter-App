@@ -1,6 +1,13 @@
-# Task Scheduler App
+![time1](https://github.com/user-attachments/assets/7f338932-5da7-44a0-9cf9-80599e005a10)![time1](https://github.com/user-attachments/assets/24c9e75f-1306-43b0-99d9-ef594deac0d0)# Task Scheduler App
 
 A Flutter application for managing and scheduling tasks efficiently.
+
+
+![time1](https://github.com/user-attachments/assets/f51d6625-5e81-4f7e-a190-7ff8908c8430)
+
+![time2](https://github.com/user-attachments/assets/7c04b557-d65e-43d5-9775-1aceb834918d)
+
+![time3](https://github.com/user-attachments/assets/870ff18b-2208-4371-a2cb-4124302c8d8f)
 
 ## Features
 
@@ -19,7 +26,7 @@ To run this project locally:
 2. Clone this repository:
 
    ```bash
-   git clone <https://github.com/annish-cmd/Time-Scheduler-Flutter-App>
+   git clone https://github.com/annish-cmd/Time-Scheduler-Flutter-App
    ```
 
 3. Navigate to project directory:
@@ -48,4 +55,3 @@ To run this project locally:
 
 ## Contributing
 
-Feel free to contribute to this project by opening issues or submitting pull requests.
