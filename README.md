@@ -3,11 +3,11 @@
 A Flutter application for managing and scheduling tasks efficiently.
 
 
-![time1](https://github.com/user-attachments/assets/f51d6625-5e81-4f7e-a190-7ff8908c8430)
+![time1](https://github.com/user-attachments/assets/79d4a1b4-4b39-4f00-a5e8-c12d2e4f5f7a)
 
-![time2](https://github.com/user-attachments/assets/7c04b557-d65e-43d5-9775-1aceb834918d)
+![time2](https://github.com/user-attachments/assets/18f52edd-b8fc-4db6-a981-d8c6a67cfd2b)
 
-![time3](https://github.com/user-attachments/assets/870ff18b-2208-4371-a2cb-4124302c8d8f)
+![time3](https://github.com/user-attachments/assets/dccda55d-62c6-4bf3-8820-702eb59336ca)
 
 ## Features
 
