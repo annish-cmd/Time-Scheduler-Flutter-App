@@ -1,4 +1,4 @@
-# Task Scheduler App
+# Task Scheduler Static App
 
 A Flutter application for managing and scheduling tasks efficiently.
 
@@ -53,5 +53,5 @@ To run this project locally:
 - Android Studio / VS Code with Flutter extension
 - A physical device or emulator
 
-## Contributing
+
 
