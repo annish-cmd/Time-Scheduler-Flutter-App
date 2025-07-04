@@ -1,4 +1,4 @@
-![time1](https://github.com/user-attachments/assets/7f338932-5da7-44a0-9cf9-80599e005a10)![time1](https://github.com/user-attachments/assets/24c9e75f-1306-43b0-99d9-ef594deac0d0)# Task Scheduler App
+# Task Scheduler App
 
 A Flutter application for managing and scheduling tasks efficiently.
 
