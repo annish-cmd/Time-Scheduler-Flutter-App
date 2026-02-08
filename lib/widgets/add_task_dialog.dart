@@ -236,7 +236,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).primaryColor,
+                                  color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
                                 ),
                               ),
                             ],
@@ -298,7 +298,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).primaryColor,
+                                  color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
                                 ),
                               ),
                             ],

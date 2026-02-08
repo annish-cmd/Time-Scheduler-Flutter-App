@@ -189,13 +189,13 @@ class AppDrawer extends StatelessWidget {
               children: [
                 // Profile Picture
                 Container(
-                  width: 80,
-                  height: 80,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Colors.white,
-                      width: 2,
+                      width: 3,
                     ),
                   ),
                   child: ClipOval(
@@ -204,18 +204,16 @@ class AppDrawer extends StatelessWidget {
                             userModel.profileImage!,
                             fit: BoxFit.cover,
                           )
-                        : Container(
-                            color: Colors.grey.shade300,
-                            child: const Icon(
-                              Icons.person,
-                              size: 50,
-                              color: Colors.white,
-                            ),
+                        : Image.asset(
+                            'assets/images/patrick bateman.jpg',
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
                           ),
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
 
                 // Name
                 Text(
@@ -322,8 +320,8 @@ class AppDrawer extends StatelessWidget {
                 child: Stack(
                   children: [
                     Container(
-                      width: 100,
-                      height: 100,
+                      width: 120,
+                      height: 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
@@ -339,10 +337,11 @@ class AppDrawer extends StatelessWidget {
                               )
                             : Container(
                                 color: Colors.grey.shade200,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 60,
-                                  color: Colors.grey.shade400,
+                                child: Image.asset(
+                                  'assets/images/patrick bateman.jpg',
+                                  fit: BoxFit.cover,
+                                  width: 120,
+                                  height: 120,
                                 ),
                               ),
                       ),

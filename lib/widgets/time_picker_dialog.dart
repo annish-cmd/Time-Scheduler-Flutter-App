@@ -246,7 +246,7 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                     IconButton(
                       icon: Icon(
                         Icons.keyboard_arrow_up,
-                        color: primaryColor,
+                        color: isDarkMode ? Colors.white : primaryColor,
                         size: 32,
                       ),
                       onPressed: () => _adjustHour(1),
@@ -265,14 +265,14 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                         style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: isDarkMode ? Colors.white : primaryColor,
                         ),
                       ),
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.keyboard_arrow_down,
-                        color: primaryColor,
+                        color: isDarkMode ? Colors.white : primaryColor,
                         size: 32,
                       ),
                       onPressed: () => _adjustHour(-1),
@@ -308,7 +308,7 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                     IconButton(
                       icon: Icon(
                         Icons.keyboard_arrow_up,
-                        color: primaryColor,
+                        color: isDarkMode ? Colors.white : primaryColor,
                         size: 32,
                       ),
                       onPressed: () => _adjustMinute(1),
@@ -327,14 +327,14 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
                         style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: isDarkMode ? Colors.white : primaryColor,
                         ),
                       ),
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.keyboard_arrow_down,
-                        color: primaryColor,
+                        color: isDarkMode ? Colors.white : primaryColor,
                         size: 32,
                       ),
                       onPressed: () => _adjustMinute(-1),

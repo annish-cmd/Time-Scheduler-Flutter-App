@@ -513,8 +513,7 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -585,8 +584,7 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),

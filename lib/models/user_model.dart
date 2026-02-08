@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserModel extends ChangeNotifier {
-  String _name = 'John Doe';
-  String _email = 'john.doe@example.com';
+  String _name = 'Patrick Bateman';
+  String _email = 'patrick.bateman@example.com';
   String? _imagePath;
   bool _isDarkMode = false;
 
@@ -23,8 +23,8 @@ class UserModel extends ChangeNotifier {
   // Initialize user from shared preferences
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    _name = prefs.getString('user_name') ?? 'John Doe';
-    _email = prefs.getString('user_email') ?? 'john.doe@example.com';
+    _name = prefs.getString('user_name') ?? 'Patrick Bateman';
+    _email = prefs.getString('user_email') ?? 'patrick.bateman@example.com';
     _imagePath = prefs.getString('user_image_path');
     _isDarkMode = prefs.getBool('is_dark_mode') ?? false;
     notifyListeners();
