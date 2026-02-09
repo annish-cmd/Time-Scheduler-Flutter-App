@@ -7,6 +7,7 @@ import 'widgets/task_list.dart';
 import 'widgets/add_task_dialog.dart';
 import 'widgets/edit_task_dialog.dart';
 import 'utils/color_utils.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -121,17 +122,67 @@ class TaskSchedulerApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isDrawerOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused && _isDrawerOpen) {
+      // When app goes to background and drawer is open, remember state
+      _isDrawerOpen = true;
+    } else if (state == AppLifecycleState.resumed && _isDrawerOpen) {
+      // When app resumes and drawer was open, reopen it
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted && scaffoldKey.currentState != null) {
+          scaffoldKey.currentState!.openDrawer();
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     final taskModel = Provider.of<TaskModel>(context);
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const AppDrawer(),
+    return WillPopScope(
+      onWillPop: () async {
+        if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
+          scaffoldKey.currentState?.closeDrawer();
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: Drawer(
+          child: const AppDrawer(),
+        ),
+        onDrawerChanged: (bool isOpen) {
+          setState(() {
+            _isDrawerOpen = isOpen;
+          });
+        },
       body: Column(
         children: [
           // Professional App Bar
@@ -293,6 +344,16 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-    );
+    ),
+  );
+  }
+
+  void _updateDrawerState() {
+    final isDrawerOpen = scaffoldKey.currentState?.isDrawerOpen ?? false;
+    if (isDrawerOpen != _isDrawerOpen) {
+      setState(() {
+        _isDrawerOpen = isDrawerOpen;
+      });
+    }
   }
 }
