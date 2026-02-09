@@ -151,10 +151,10 @@ class HelpSupportScreen extends StatelessWidget {
               ),
               _buildSocialLink(
                 title: 'LinkedIn',
-                subtitle: '@anishchauhan',
+                subtitle: '@anishchauhan25',
                 icon: Icons.work_rounded,
                 onTap: () =>
-                    _launchUrl('https://www.linkedin.com/in/anishchauhan/'),
+                    _launchUrl('https://www.linkedin.com/in/anishchauhan25/'),
                 gradientColors: [
                   const Color(0xFF0077B5),
                   const Color(0xFF00A0DC),
